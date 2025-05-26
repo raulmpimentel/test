@@ -10,6 +10,11 @@ import re
 import numpy as np
 from email.message import EmailMessage
 import smtplib
+import os
+
+EMAIL_SENHA_APP = os.environ["EMAIL_SENHA_APP"]
+EMAIL_REMETENTE = os.environ["EMAIL_REMETENTE"]
+EMAIL_DESTINATARIO = os.environ["EMAIL_DESTINATARIO"]
 
 ####################################################################################### ETAPA 1: EXTRAÇÃO DE JOGOS DO DIA DE AMANHÃ
 
