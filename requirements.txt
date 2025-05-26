@@ -1,0 +1,7 @@
+pandas
+numpy
+selenium
+webdriver-manager
+email-validator
+matplotlib
+python-dateutil
