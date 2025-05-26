@@ -93,7 +93,7 @@ driver.close() # fecha o driver porque vamos abri-lo mais tarde
 
 df_confrontos = pd.read_csv(f"CONFRONTOS_{data_str_formatada}.csv", sep=";") # 1. Carrega o CSV com confrontos (já gerado pelo script anterior)
 
-todos_times = pd.unique(df_confrontos["Casa"].tolist() + df_confrontos["Visitante"].tolist()) # 2.1 Cria lista única de times
+todos_times = pd.unique(pd.Series(df_confrontos["Casa"].tolist() + df_confrontos["Visitante"].tolist())) # 2.1 Cria lista única de times
 df_times = pd.DataFrame({"Time": todos_times}) # 2.2 Cria lista única de times
 
 # 3. Carrega o CSV com links diretos
