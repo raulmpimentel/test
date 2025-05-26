@@ -5,3 +5,4 @@ webdriver-manager
 email-validator
 matplotlib
 python-dateutil
+beautifulsoup4
