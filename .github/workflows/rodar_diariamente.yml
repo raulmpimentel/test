@@ -1,0 +1,27 @@
+name: Rodar script todos os dias
+
+on:
+  schedule:
+    - cron: '0 23 * * *'  # Roda às 23h UTC = 20h no horário de Brasília
+  workflow_dispatch:      # Permite rodar manualmente
+
+jobs:
+  executar:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Clonar repositório
+      uses: actions/checkout@v3
+
+    - name: Instalar Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Instalar dependências
+      run: |
+        pip install -r requirements.txt
+
+    - name: Rodar script
+      run: |
+        python 03_GITHUB_UNIFICADO_COMPLETO.py
