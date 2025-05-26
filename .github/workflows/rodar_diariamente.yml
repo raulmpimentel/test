@@ -2,7 +2,7 @@ name: Rodar script todos os dias
 
 on:
   schedule:
-    - cron: '0 23 * * *'  # Roda às 23h UTC = 20h no horário de Brasília
+    - cron: '0 23 * * *'  # Roda às 23h UTC = 20h no Brasil (horário padrão)
   workflow_dispatch:      # Permite rodar manualmente
 
 jobs:
@@ -22,6 +22,10 @@ jobs:
       run: |
         pip install -r requirements.txt
 
-    - name: Rodar script
+    - name: Rodar script com variáveis de ambiente
       run: |
         python 03_GITHUB_UNIFICADO_COMPLETO.py
+      env:
+        EMAIL_SENHA_APP: ${{ secrets.EMAIL_SENHA_APP }}
+        EMAIL_REMETENTE: ${{ secrets.EMAIL_REMETENTE }}
+        EMAIL_DESTINATARIO: ${{ secrets.EMAIL_DESTINATARIO }}
