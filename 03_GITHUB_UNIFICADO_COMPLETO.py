@@ -11,6 +11,7 @@ import numpy as np
 from email.message import EmailMessage
 import smtplib
 import os
+import tempfile
 
 EMAIL_SENHA_APP = os.environ["EMAIL_SENHA_APP"]
 EMAIL_REMETENTE = os.environ["EMAIL_REMETENTE"]
@@ -30,6 +31,12 @@ chrome_options.add_argument('--ignore-certificate-errors')
 chrome_options.add_argument('--ignore-ssl-errors')
 
 # Instanciar o navegador
+user_data_dir = tempfile.mkdtemp()  # cria um diretório temporário único
+chrome_options.add_argument(f'--user-data-dir={user_data_dir}')  # força uso de diretório exclusivo
+chrome_options.add_argument('--headless')
+chrome_options.add_argument('--no-sandbox')
+chrome_options.add_argument('--disable-dev-shm-usage')
+chrome_options.add_argument('--disable-gpu')
 driver = webdriver.Chrome(options=chrome_options)
 time.sleep(2)
 driver.maximize_window()
@@ -103,7 +110,13 @@ df_times.iloc[:, 1].dropna().to_csv(nome_arquivo_txt, index=False, header=False)
 
 ####################################################################################### ETAPA 2: EXTRAÇÃO DE HISTÓRICO DE JOGOS
 
-driver = webdriver.Chrome(options=chrome_options) # caso o sistema não encontre, verifique onde ele está no PATH do Windows ao ir em "Propriedades Avançadas de Sistema" e depois "Variáveis de ambiente".
+user_data_dir = tempfile.mkdtemp()  # cria um diretório temporário único
+chrome_options.add_argument(f'--user-data-dir={user_data_dir}')  # força uso de diretório exclusivo
+chrome_options.add_argument('--headless')
+chrome_options.add_argument('--no-sandbox')
+chrome_options.add_argument('--disable-dev-shm-usage')
+chrome_options.add_argument('--disable-gpu')
+driver = webdriver.Chrome(options=chrome_options)
 time.sleep(10)
 driver.maximize_window()
 time.sleep(2)
