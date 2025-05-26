@@ -91,7 +91,7 @@ df.to_csv(nome_arquivo, sep=";", encoding='windows-1252', index=False, header=Tr
 
 driver.close() # fecha o driver porque vamos abri-lo mais tarde
 
-df_confrontos = pd.read_csv(f"CONFRONTOS_{data_str_formatada}.csv", sep=";") # 1. Carrega o CSV com confrontos (já gerado pelo script anterior)
+df_confrontos = pd.read_csv(f"CONFRONTOS_{data_str_formatada}.csv", sep=";", encoding='windows-1252') # 1. Carrega o CSV com confrontos (já gerado pelo script anterior)
 
 todos_times = pd.unique(pd.Series(df_confrontos["Casa"].tolist() + df_confrontos["Visitante"].tolist())) # 2.1 Cria lista única de times
 df_times = pd.DataFrame({"Time": todos_times}) # 2.2 Cria lista única de times
@@ -173,8 +173,8 @@ data_atual = (datetime.now() + timedelta(days=1))
 data_str_formatada = data_atual.strftime("%d-%m-%Y")
 
 # === CARREGAMENTO DOS ARQUIVOS ===
-df_confrontos = pd.read_csv(f"CONFRONTOS_{data_str_formatada}.csv", sep=";")
-df_historico = pd.read_csv(f"historico_times_{data_str_formatada}.csv", sep=";")
+df_confrontos = pd.read_csv(f"CONFRONTOS_{data_str_formatada}.csv", sep=";", encoding='windows-1252')
+df_historico = pd.read_csv(f"historico_times_{data_str_formatada}.csv", sep=";", encoding='windows-1252')
 df_historico["Data"] = pd.to_datetime(df_historico["Data"], errors="coerce", dayfirst=True)
 df_historico["Ano-Mês"] = df_historico["Data"].dt.to_period("M")
 mand = df_historico[["Ano-Mês", "Time da casa", "Placar casa", "Placar visitante"]].copy()
