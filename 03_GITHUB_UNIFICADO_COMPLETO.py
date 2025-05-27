@@ -87,22 +87,22 @@ df = pd.DataFrame(fdata, columns=["Casa", "Visitante", "Campeonato"])
 
 # Salvar como CSV
 nome_arquivo = f"CONFRONTOS_{data_str_formatada}.csv"
-df.to_csv(nome_arquivo, sep=";", encoding='windows-1252', index=False, header=True)
+df.to_csv(nome_arquivo, sep=";", encoding='utf-8-sig', index=False, header=True)
 
 driver.close() # fecha o driver porque vamos abri-lo mais tarde
 
-df_confrontos = pd.read_csv(f"CONFRONTOS_{data_str_formatada}.csv", sep=";", encoding='windows-1252') # 1. Carrega o CSV com confrontos (já gerado pelo script anterior)
+df_confrontos = pd.read_csv(f"CONFRONTOS_{data_str_formatada}.csv", sep=";", encoding='utf-8-sig') # 1. Carrega o CSV com confrontos (já gerado pelo script anterior)
 
 todos_times = pd.unique(pd.Series(df_confrontos["Casa"].tolist() + df_confrontos["Visitante"].tolist())) # 2.1 Cria lista única de times
 df_times = pd.DataFrame({"Time": todos_times}) # 2.2 Cria lista única de times
 
 # 3. Carrega o CSV com links diretos
 # Esse CSV precisa ter colunas: 'Time' e 'Link'
-df_links = pd.read_csv("links_times.csv", sep=";", encoding="windows-1252")
+df_links = pd.read_csv("links_times.csv", sep=";", encoding="utf-8-sig")
 
 # 4. Faz o merge para associar links aos times encontrados
 df_times = df_times.merge(df_links, on="Time", how="left")
-df_times.to_csv(f"LINKS_ENCONTRADOS_{data_str_formatada}.csv", sep=";", index=False, encoding="windows-1252")
+df_times.to_csv(f"LINKS_ENCONTRADOS_{data_str_formatada}.csv", sep=";", index=False, encoding="utf-8-sig")
 
 nome_arquivo_txt = f"urls_jogos_do_dia_{data_str_formatada}.txt" # Supondo que seu DataFrame com links seja df_times
 
@@ -159,7 +159,7 @@ df_final.replace({" AET": "", " ABD": ""}, regex=True, inplace=True)
 
 # Salvar o dataframe como um arquivo CSV
 nomedoarquivo = f"historico_times_{data_str_formatada}.csv"
-df_final.to_csv(nomedoarquivo, sep=";", encoding='windows-1252', index=False, header=True)
+df_final.to_csv(nomedoarquivo, sep=";", encoding='utf-8-sig', index=False, header=True)
 
 # Fechar o driver no final
 driver.close()
@@ -173,8 +173,8 @@ data_atual = (datetime.now() + timedelta(days=1))
 data_str_formatada = data_atual.strftime("%d-%m-%Y")
 
 # === CARREGAMENTO DOS ARQUIVOS ===
-df_confrontos = pd.read_csv(f"CONFRONTOS_{data_str_formatada}.csv", sep=";", encoding='windows-1252')
-df_historico = pd.read_csv(f"historico_times_{data_str_formatada}.csv", sep=";", encoding='windows-1252')
+df_confrontos = pd.read_csv(f"CONFRONTOS_{data_str_formatada}.csv", sep=";", encoding='utf-8-sig')
+df_historico = pd.read_csv(f"historico_times_{data_str_formatada}.csv", sep=";", encoding='utf-8-sig')
 df_historico["Data"] = pd.to_datetime(df_historico["Data"], errors="coerce", dayfirst=True)
 df_historico["Ano-Mês"] = df_historico["Data"].dt.to_period("M")
 mand = df_historico[["Ano-Mês", "Time da casa", "Placar casa", "Placar visitante"]].copy()
@@ -465,7 +465,7 @@ df_confrontos = df_confrontos[colunas_desejadas]
 data_str_formatada = (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d")
 nome_arquivo_csv = f"confrontos_stats_6m_5j_{data_str_formatada}.csv"
 
-df_confrontos.to_csv(nome_arquivo_csv, sep=";", index=False, encoding="windows-1252", decimal=",")
+df_confrontos.to_csv(nome_arquivo_csv, sep=";", index=False, encoding="utf-8-sig", decimal=",")
 
 print("✅ Estatísticas combinadas salvas com sucesso!")
 
