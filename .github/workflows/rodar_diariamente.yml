@@ -2,7 +2,7 @@ name: Rodar script todos os dias
 
 on:
   schedule:
-    - cron: '0 1 * * *'  # Roda às 01h UTC = 22h no Brasil (horário de Brasília)
+    - cron: '0 23 * * *'  # Roda às 23h UTC = 20h no Brasil (horário de Brasília)
   workflow_dispatch:      # Permite rodar manualmente também
 
 jobs:
