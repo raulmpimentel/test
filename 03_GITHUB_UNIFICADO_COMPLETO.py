@@ -98,7 +98,7 @@ df_times = pd.DataFrame({"Time": todos_times}) # 2.2 Cria lista única de times
 
 # 3. Carrega o CSV com links diretos
 # Esse CSV precisa ter colunas: 'Time' e 'Link'
-df_links = pd.read_csv("links_times.csv", sep=";", encoding="cp1252")
+df_links = pd.read_csv("links_times.csv", sep=";", encoding="utf-8-sig")
 
 # 4. Faz o merge para associar links aos times encontrados
 df_times = df_times.merge(df_links, on="Time", how="left")
