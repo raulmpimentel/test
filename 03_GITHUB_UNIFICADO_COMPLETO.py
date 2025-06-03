@@ -278,6 +278,16 @@ for lado in ['Casa', 'Visitante']: #MÉDIAS GERAIS FEITOS E SOFRIDOS
     df_confrontos[f'Média Geral Feitos {lado}'] = ((df_confrontos[f'6m Média Gols Feitos {lado}'] + 2 * df_confrontos[f'5J Média Gols Feitos {lado}']) / 3).round(2)
     df_confrontos[f'Média Geral Sofridos {lado}'] = ((df_confrontos[f'6m Média Gols Sofridos {lado}'] + 2 * df_confrontos[f'5J Média Gols Sofridos {lado}']) / 3).round(2)
 
+# === CÁLCULO POISSON +0.5 GOL ===
+df_confrontos['Poisson +0.5 Casa'] = (1 - np.exp(-(df_confrontos['Média Geral Feitos Casa'] * df_confrontos['Média Geral Sofridos Visitante'])))
+df_confrontos['Poisson +0.5 Visitante'] = (1 - np.exp(-(df_confrontos['Média Geral Feitos Visitante'] * df_confrontos['Média Geral Sofridos Casa'])))
+
+# === PROBABILIDADE BTTS E 0,5 MATCH ===
+df_confrontos['Prob. +0,5 Match'] = (df_confrontos['Poisson +0.5 Casa'] + df_confrontos['Poisson +0.5 Visitante']) - (df_confrontos['Poisson +0.5 Casa'] * df_confrontos['Poisson +0.5 Visitante'])
+df_confrontos['Prob. 0 a 0'] = 1 - df_confrontos['Prob. +0,5 Match']
+df_confrontos['BTTS'] = df_confrontos['Poisson +0.5 Casa'] * df_confrontos['Poisson +0.5 Visitante']
+df_confrontos['Prob. No BTTS'] = (1 - df_confrontos['BTTS'])
+
 # === XG, OVERALL SCORE, DESEQUILÍBRIO ===
 df_confrontos['Simplified xG Casa'] = (((df_confrontos['6m Média Gols Feitos Casa'] * df_confrontos['6m Média Gols Sofridos Visitante']) + (df_confrontos['5J Média Gols Feitos Casa'] * df_confrontos['5J Média Gols Sofridos Visitante'])) / 2).round(2)
 df_confrontos['Simplified xG Visitante'] = (((df_confrontos['6m Média Gols Feitos Visitante'] * df_confrontos['6m Média Gols Sofridos Casa']) + (df_confrontos['5J Média Gols Feitos Visitante'] * df_confrontos['5J Média Gols Sofridos Casa'])) / 2).round(2)
@@ -457,6 +467,9 @@ colunas_desejadas = [
     "Aproveitamento Mês -5 Casa", "Aproveitamento Mês -5 Visitante",
     "Simplified xG Casa", "Simplified xG Visitante", "Overall Score", 
     "Desequilíbrio Absoluto xG", "Desequilíbrio % xG",
+    "Poisson +0.5 Casa","Poisson +0.5 Visitante",
+    "Prob. +0,5 Match","Prob. 0 a 0",
+    "BTTS", "Prob. No BTTS",
 ]
 
 # Filtrar o DataFrame final
@@ -486,8 +499,12 @@ SENHA_APP = 'ousa uhmx vhzd xpoy'  # nunca a senha real da conta
 colunas_email = [
     "Casa", "Visitante", "Campeonato",
     "Simplified xG Casa", "Simplified xG Visitante",
-    "Overall Score", "Desequilíbrio Absoluto xG", "Desequilíbrio % xG"
+    "Overall Score", "Desequilíbrio Absoluto xG", "Desequilíbrio % xG",
+    "Poisson +0.5 Casa", "Poisson +0.5 Visitante",
+    "Prob. +0,5 Match", "Prob. 0 a 0",
+    "BTTS", "Prob. No BTTS"
 ]
+
 
 df_email = df_confrontos[colunas_email].copy()
 df_email = df_email.sort_values(by="Overall Score", ascending=False)
@@ -523,8 +540,12 @@ for _, row in df_email.iterrows():
         <td>{row['Simplified xG Casa']:.2f}</td>
         <td>{row['Simplified xG Visitante']:.2f}</td>
         <td>{row['Overall Score']:.2f}</td>
-        <td>{row['Desequilíbrio Absoluto xG']:.2f}</td>
-        <td>{row['Desequilíbrio % xG']:.0%}</td>
+        <td>{row['Poisson +0.5 Casa']:.0%}</td>
+        <td>{row['Poisson +0.5 Visitante']:.0%}</td>
+        <td>{row['Prob. +0,5 Match']:.0%}</td>
+        <td>{row['Prob. 0 a 0']:.0%}</td>
+        <td>{row['BTTS']:.0%}</td>
+        <td>{row['Prob. No BTTS']:.0%}</td>
       </tr>"""
 
 msg.add_alternative(f"""\
@@ -540,8 +561,12 @@ msg.add_alternative(f"""\
         <th>xG Casa</th>
         <th>xG Visitante</th>
         <th>Overall</th>
-        <th>Dif. xG</th>
-        <th>Dif. %</th>
+        <th>Poisson +0,5 Home</th>
+        <th>Poisson +0,5 Away</th>
+        <th>+0,5 Goal Probability</th>
+        <th>0-0 Probability</th>
+        <th>BTTS Chance</th>
+        <th>No BTTS Chance</th>
       </tr>
       {linhas_tabela}
     </table>
