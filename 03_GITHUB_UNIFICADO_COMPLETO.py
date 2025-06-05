@@ -537,15 +537,15 @@ for _, row in df_email.iterrows():
         <td>{row['Casa']}</td>
         <td>{row['Visitante']}</td>
         <td>{row['Campeonato']}</td>
+        <td>{row['Prob. +0,5 Match']:.0%}</td>
+        <td>{row['Prob. 0 a 0']:.0%}</td>
+        <td>{row['BTTS']:.0%}</td>
+        <td>{row['Prob. No BTTS']:.0%}</td>
         <td>{row['Simplified xG Casa']:.2f}</td>
         <td>{row['Simplified xG Visitante']:.2f}</td>
         <td>{row['Overall Score']:.2f}</td>
         <td>{row['Poisson +0.5 Casa']:.0%}</td>
         <td>{row['Poisson +0.5 Visitante']:.0%}</td>
-        <td>{row['Prob. +0,5 Match']:.0%}</td>
-        <td>{row['Prob. 0 a 0']:.0%}</td>
-        <td>{row['BTTS']:.0%}</td>
-        <td>{row['Prob. No BTTS']:.0%}</td>
       </tr>"""
 
 msg.add_alternative(f"""\
@@ -558,15 +558,15 @@ msg.add_alternative(f"""\
         <th>Casa</th>
         <th>Visitante</th>
         <th>Campeonato</th>
+        <th>+0,5 Goal Probability</th>
+        <th>0-0 Probability</th>
+        <th>BTTS Chance</th>
+        <th>No BTTS Chance</th>        
         <th>xG Casa</th>
         <th>xG Visitante</th>
         <th>Overall</th>
         <th>Poisson +0,5 Home</th>
         <th>Poisson +0,5 Away</th>
-        <th>+0,5 Goal Probability</th>
-        <th>0-0 Probability</th>
-        <th>BTTS Chance</th>
-        <th>No BTTS Chance</th>
       </tr>
       {linhas_tabela}
     </table>
