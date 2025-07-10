@@ -70,20 +70,22 @@ for row in rows_with_match:
     league = row.find(class_="league alt")
     home = row.find(class_="home")
     guest = row.find(class_="guest")
+    gametime = row.find(class_="status alt")
     # Captura os textos dos elementos encontrados com limpeza
     league_text = league.get_text(strip=True) if league else None
     home_text = limpar_nome(home.get_text(strip=True)) if home else None
     guest_text = limpar_nome(guest.get_text(strip=True)) if guest else None
-    data.append([home_text, guest_text, league_text])
+    gametime_text = limpar_nome(gametime.get_text(strip=True)) if guest else None
+    data.append([home_text, guest_text, league_text, gametime_text])
 
 # Lista de competições filtradas
-competitions = ["COL D1", "COL D1F", "BRA D1", "BRA D2", "BRA Cup", "ARG D1", "ARG Cup", "PER D1", "PAR D1", "URU D1", "BOL D1", "MEX D1PO", "UEFA CL", "ITA D1", "ITA D2", "ITA Cup", "SPA D1", "ENG PR", "ENG LCh", "FRA D1", "ENG Cup", "GER D1", "HOL D1", "POR D1", "CON CLA", "CON CSA", "ECU D1", "CHI D1", "CHI Cup", "UEFA EL", "UEFA ECL", "TUR D1", "GRE D1", "IRL D1", "JPN D1", "RUS D1", "SCO PR", "BEL D1", "GER Cup", "SPA Cup", "SPA D2", "HOL Cup", "POR Cup", "URU Cup", "KSA D1", "FIFA IC", "COL Cup", "MAR D1", "ITA SC", "POR LC", "ENG LC", "TUR Cup", "GER D2", "FIFA CWC"]
+competitions = ["COL D1", "BRA CNF", "COL D1F", "BRA D1", "BRA D2", "BRA Cup", "ARG D1", "ARG Cup", "PER D1", "PAR D1", "URU D1", "BOL D1", "MEX D1PO", "UEFA CL", "ITA D1", "ITA D2", "ITA Cup", "SPA D1", "ENG PR", "ENG LCh", "FRA D1", "ENG Cup", "GER D1", "HOL D1", "POR D1", "CON CLA", "CON CSA", "ECU D1", "CHI D1", "CHI Cup", "UEFA EL", "UEFA ECL", "TUR D1", "GRE D1", "IRL D1", "JPN D1", "RUS D1", "SCO PR", "BEL D1", "GER Cup", "SPA Cup", "SPA D2", "HOL Cup", "POR Cup", "URU Cup", "KSA D1", "FIFA IC", "COL Cup", "MAR D1", "ITA SC", "POR LC", "ENG LC", "TUR Cup", "GER D2", "FIFA CWC"]
 
 # Filtrar apenas os dados das competições desejadas
 fdata = [row for row in data if row[2] in competitions]
 
 # Criar DataFrame
-df = pd.DataFrame(fdata, columns=["Casa", "Visitante", "Campeonato"])
+df = pd.DataFrame(fdata, columns=["Casa", "Visitante", "Campeonato", "Hora"])
 
 # Salvar como CSV
 nome_arquivo = f"CONFRONTOS_{data_str_formatada}.csv"
