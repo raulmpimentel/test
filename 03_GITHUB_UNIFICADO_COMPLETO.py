@@ -499,7 +499,7 @@ SENHA_APP = 'ousa uhmx vhzd xpoy'  # nunca a senha real da conta
 
 # === SELECIONAR E ORDENAR OS DADOS PARA O CORPO DO E-MAIL ===
 colunas_email = [
-    "Casa", "Visitante", "Campeonato",
+    "Casa", "Visitante", "Campeonato", "Hora",
     "Simplified xG Casa", "Simplified xG Visitante",
     "Overall Score", "Desequilíbrio Absoluto xG", "Desequilíbrio % xG",
     "Poisson +0.5 Casa", "Poisson +0.5 Visitante",
@@ -515,7 +515,7 @@ df_email = df_email.sort_values(by="Overall Score", ascending=False)
 linhas_email = []
 for _, row in df_email.iterrows():
     linha = (
-        f"{row['Casa']} x {row['Visitante']} - {row['Campeonato']} | "
+        f"{row['Hora']} - {row['Casa']} x {row['Visitante']} - {row['Campeonato']} | "
         f"xG: {row['Simplified xG Casa']:.2f} x {row['Simplified xG Visitante']:.2f} | "
         f"Total: {row['Overall Score']:.2f} | "
         f"Dif.: {row['Desequilíbrio Absoluto xG']:.2f} ({row['Desequilíbrio % xG']:.0%})"
@@ -539,6 +539,7 @@ for _, row in df_email.iterrows():
         <td>{row['Casa']}</td>
         <td>{row['Visitante']}</td>
         <td>{row['Campeonato']}</td>
+        <td>{row['Hora']}</td>
         <td>{row['Prob. +0,5 Match']:.0%}</td>
         <td>{row['Prob. 0 a 0']:.0%}</td>
         <td>{row['BTTS']:.0%}</td>
@@ -560,6 +561,7 @@ msg.add_alternative(f"""\
         <th>Casa</th>
         <th>Visitante</th>
         <th>Campeonato</th>
+        <th>Hora</th>
         <th>+0,5 Goal Probability</th>
         <th>0-0 Probability</th>
         <th>BTTS Chance</th>
