@@ -87,6 +87,16 @@ fdata = [row for row in data if row[2] in competitions]
 # Criar DataFrame
 df = pd.DataFrame(fdata, columns=["Casa", "Visitante", "Campeonato", "Hora"])
 
+def ajustar_fuso(hora_str):
+    try:
+        hora_dt = datetime.strptime(hora_str, "%H:%M")
+        hora_corrigida = hora_dt - timedelta(hours=3)  # de UTC para GMT-3
+        return hora_corrigida.strftime("%H:%M")
+    except:
+        return hora_str  # em caso de erro (ex: string vazia), retorna como está
+
+df["Hora"] = df["Hora"].apply(ajustar_fuso)
+
 # Salvar como CSV
 nome_arquivo = f"CONFRONTOS_{data_str_formatada}.csv"
 df.to_csv(nome_arquivo, sep=";", encoding='utf-8-sig', index=False, header=True)
