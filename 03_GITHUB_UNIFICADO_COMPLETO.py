@@ -437,7 +437,7 @@ for i in range(6):
 # === SALVA O RESULTADO FINAL ===
 df_confrontos = df_confrontos.round(2)
 colunas_desejadas = [
-    "Casa", "Visitante", "Campeonato",
+    "Casa", "Visitante", "Campeonato", "Hora",
     # Estatísticas 6 meses
     "6m Jogos Casa", "6m Vitórias Casa", "6m Empates Casa", "6m Derrotas Casa",
     "6m Gols Feitos Casa", "6m Gols Sofridos Casa",
