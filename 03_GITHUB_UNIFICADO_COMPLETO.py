@@ -519,7 +519,7 @@ colunas_email = [
 
 
 df_email = df_confrontos[colunas_email].copy()
-df_email = df_email.sort_values(by="Overall Score", ascending=False)
+df_email = df_email.sort_values(by="Hora", ascending=True)
 
 # === FORMATAR CADA LINHA COMO TEXTO ===
 linhas_email = []
