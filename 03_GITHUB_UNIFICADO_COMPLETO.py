@@ -79,7 +79,7 @@ for row in rows_with_match:
     data.append([home_text, guest_text, league_text, gametime_text])
 
 # Lista de competições filtradas
-competitions = ["COL D1", "BRA CNF", "COL D1F", "BRA D1", "BRA D2", "BRA Cup", "ARG D1", "ARG Cup", "PER D1", "PAR D1", "URU D1", "BOL D1", "MEX D1PO", "UEFA CL", "ITA D1", "ITA D2", "ITA Cup", "SPA D1", "ENG PR", "ENG LCh", "FRA D1", "ENG Cup", "GER D1", "HOL D1", "POR D1", "CON CLA", "CON CSA", "ECU D1", "CHI D1", "CHI Cup", "UEFA EL", "UEFA ECL", "TUR D1", "GRE D1", "IRL D1", "JPN D1", "RUS D1", "SCO PR", "BEL D1", "GER Cup", "SPA Cup", "SPA D2", "POR Cup", "URU Cup", "KSA D1", "FIFA IC", "COL Cup", "MAR D1", "ITA SC", "POR LC", "ENG LC", "GER D2", "FIFA CWC"]
+competitions = ["COL D1", "BRA CNF", "COL D1F", "BRA D1", "BRA D2", "BRA Cup", "ARG D1", "ARG Cup", "PER D1", "PAR D1", "URU D1", "BOL D1", "MEX D1PO", "UEFA CL", "ITA D1", "ITA D2", "ITA Cup", "SPA D1", "ENG PR", "ENG LCh", "FRA D1", "ENG Cup", "GER D1", "HOL D1", "POR D1", "CON CLA", "CON CSA", "ECU D1", "CHI D1", "CHI Cup", "UEFA EL", "UEFA ECL", "TUR D1", "GRE D1", "IRL D1", "JPN D1", "RUS D1", "SCO PR", "BEL D1", "GER Cup", "SPA Cup", "SPA D2", "HOL Cup", "POR Cup", "URU Cup", "KSA D1", "FIFA IC", "COL Cup", "MAR D1", "ITA SC", "POR LC", "ENG LC", "TUR Cup", "GER D2", "FIFA CWC"]
 
 # Filtrar apenas os dados das competições desejadas
 fdata = [row for row in data if row[2] in competitions]
@@ -224,9 +224,9 @@ def calcular_estatisticas(df):
     gols_feitos = gf_casa.add(gf_visit, fill_value=0).reindex(index_times, fill_value=0)
     gols_sofridos = gs_casa.add(gs_visit, fill_value=0).reindex(index_times, fill_value=0)
     saldo = gols_feitos - gols_sofridos
-    media_gf = (gols_feitos / jogos).round(2)
-    media_gs = (gols_sofridos / jogos).round(2)
-    aproveitamento = (((vitorias * 3 + empates) / (jogos * 3)) * 100).round(1)
+    media_gf = (gols_feitos / jogos).round(5)
+    media_gs = (gols_sofridos / jogos).round(5)
+    aproveitamento = (((vitorias * 3 + empates) / (jogos * 3)) * 100).round(5)
     return jogos, vitorias, empates, derrotas, gols_feitos, gols_sofridos, saldo, media_gf, media_gs, aproveitamento
 
 (j6, v6, e6, d6, gf6, gs6, saldo6, mgf6, mgs6, ap6) = calcular_estatisticas(df_6m)
@@ -266,9 +266,9 @@ def calcular_estatisticas_unificado(df):
     gols_feitos = df.groupby("Time")["Gols Feitos"].sum().reindex(index_times, fill_value=0)
     gols_sofridos = df.groupby("Time")["Gols Sofridos"].sum().reindex(index_times, fill_value=0)
     saldo = gols_feitos - gols_sofridos
-    media_gf = (gols_feitos / jogos).round(2)
-    media_gs = (gols_sofridos / jogos).round(2)
-    aproveitamento = (((vitorias * 3 + empates) / (jogos * 3)) * 100).round(1)
+    media_gf = (gols_feitos / jogos).round(5)
+    media_gs = (gols_sofridos / jogos).round(5)
+    aproveitamento = (((vitorias * 3 + empates) / (jogos * 3)) * 100).round(5)
     return jogos, vitorias, empates, derrotas, gols_feitos, gols_sofridos, saldo, media_gf, media_gs, aproveitamento
 
 (j5, v5, e5, d5, gf5, gs5, saldo5, mgf5, mgs5, ap5) = calcular_estatisticas_unificado(df_top5)
@@ -287,8 +287,8 @@ for lado in ['Casa', 'Visitante']:
 
 # === ESTATÍSTICAS DERIVADAS ===
 for lado in ['Casa', 'Visitante']: #MÉDIAS GERAIS FEITOS E SOFRIDOS
-    df_confrontos[f'Média Geral Feitos {lado}'] = ((df_confrontos[f'6m Média Gols Feitos {lado}'] + 2 * df_confrontos[f'5J Média Gols Feitos {lado}']) / 3).round(2)
-    df_confrontos[f'Média Geral Sofridos {lado}'] = ((df_confrontos[f'6m Média Gols Sofridos {lado}'] + 2 * df_confrontos[f'5J Média Gols Sofridos {lado}']) / 3).round(2)
+    df_confrontos[f'Média Geral Feitos {lado}'] = ((df_confrontos[f'6m Média Gols Feitos {lado}'] + 2 * df_confrontos[f'5J Média Gols Feitos {lado}']) / 3).round(5)
+    df_confrontos[f'Média Geral Sofridos {lado}'] = ((df_confrontos[f'6m Média Gols Sofridos {lado}'] + 2 * df_confrontos[f'5J Média Gols Sofridos {lado}']) / 3).round(5)
 
 # === CÁLCULO POISSON +0.5 GOL ===
 df_confrontos['Poisson +0.5 Casa'] = (1 - np.exp(-(df_confrontos['Média Geral Feitos Casa'] * df_confrontos['Média Geral Sofridos Visitante'])))
@@ -301,11 +301,11 @@ df_confrontos['BTTS'] = df_confrontos['Poisson +0.5 Casa'] * df_confrontos['Pois
 df_confrontos['Prob. No BTTS'] = (1 - df_confrontos['BTTS'])
 
 # === XG, OVERALL SCORE, DESEQUILÍBRIO ===
-df_confrontos['Simplified xG Casa'] = (((df_confrontos['6m Média Gols Feitos Casa'] * df_confrontos['6m Média Gols Sofridos Visitante']) + (df_confrontos['5J Média Gols Feitos Casa'] * df_confrontos['5J Média Gols Sofridos Visitante'])) / 2).round(2)
-df_confrontos['Simplified xG Visitante'] = (((df_confrontos['6m Média Gols Feitos Visitante'] * df_confrontos['6m Média Gols Sofridos Casa']) + (df_confrontos['5J Média Gols Feitos Visitante'] * df_confrontos['5J Média Gols Sofridos Casa'])) / 2).round(2)
-df_confrontos['Overall Score'] = (df_confrontos['Simplified xG Casa'] + df_confrontos['Simplified xG Visitante']).round(2)
+df_confrontos['Simplified xG Casa'] = (((df_confrontos['6m Média Gols Feitos Casa'] * df_confrontos['6m Média Gols Sofridos Visitante']) + (df_confrontos['5J Média Gols Feitos Casa'] * df_confrontos['5J Média Gols Sofridos Visitante'])) / 2).round(5)
+df_confrontos['Simplified xG Visitante'] = (((df_confrontos['6m Média Gols Feitos Visitante'] * df_confrontos['6m Média Gols Sofridos Casa']) + (df_confrontos['5J Média Gols Feitos Visitante'] * df_confrontos['5J Média Gols Sofridos Casa'])) / 2).round(5)
+df_confrontos['Overall Score'] = (df_confrontos['Simplified xG Casa'] + df_confrontos['Simplified xG Visitante']).round(5)
 df_confrontos["Desequilíbrio Absoluto xG"] = abs(df_confrontos["Simplified xG Casa"] - df_confrontos["Simplified xG Visitante"])
-df_confrontos["Desequilíbrio % xG"] = (df_confrontos["Desequilíbrio Absoluto xG"] / df_confrontos["Overall Score"]).replace([float('inf'), -float('inf')], 0).fillna(0).round(2)
+df_confrontos["Desequilíbrio % xG"] = (df_confrontos["Desequilíbrio Absoluto xG"] / df_confrontos["Overall Score"]).replace([float('inf'), -float('inf')], 0).fillna(0).round(5)
 
 # === DATA DOS ÚLTIMOS 5 JOGOS ===
 df_historico_base = pd.concat([df_historico[["Time da casa", "Data"]].rename(columns={"Time da casa": "Time"}),df_historico[["Time visitante", "Data"]].rename(columns={"Time visitante": "Time"})]) # Unifica time mandante e visitante com datas
@@ -445,7 +445,7 @@ for i in range(6):
     df_confrontos[f"Aproveitamento Mês -{i} Visitante"] = df_confrontos["Visitante"].map(df_aprov_dict[i]).fillna(0)
 
 # === SALVA O RESULTADO FINAL ===
-df_confrontos = df_confrontos.round(2)
+df_confrontos = df_confrontos.round(5)
 colunas_desejadas = [
     "Casa", "Visitante", "Campeonato", "Hora",
     # Estatísticas 6 meses
@@ -550,10 +550,10 @@ for _, row in df_email.iterrows():
         <td>{row['Visitante']}</td>
         <td>{row['Campeonato']}</td>
         <td>{row['Hora']}</td>
-        <td>{row['Prob. +0,5 Match']:.0%}</td>
-        <td>{row['Prob. 0 a 0']:.0%}</td>
-        <td>{row['BTTS']:.0%}</td>
-        <td>{row['Prob. No BTTS']:.0%}</td>
+        <td>{row['Prob. +0,5 Match']:.1%}</td>
+        <td>{row['Prob. 0 a 0']:.1%}</td>
+        <td>{row['BTTS']:.1%}</td>
+        <td>{row['Prob. No BTTS']:.1%}</td>
         <td>{row['Simplified xG Casa']:.2f}</td>
         <td>{row['Simplified xG Visitante']:.2f}</td>
         <td>{row['Overall Score']:.2f}</td>
@@ -603,4 +603,3 @@ with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
     smtp.send_message(msg)
 
 print("✅ E-mail enviado com sucesso!")
-
