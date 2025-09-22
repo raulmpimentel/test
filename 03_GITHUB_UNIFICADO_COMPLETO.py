@@ -79,7 +79,7 @@ for row in rows_with_match:
     data.append([home_text, guest_text, league_text, gametime_text])
 
 # Lista de competições filtradas
-competitions = ["COL D1", "BRA CNF", "COL D1F", "BRA D1", "BRA D2", "BRA Cup", "ARG D1", "ARG Cup", "PER D1", "PAR D1", "URU D1", "BOL D1", "MEX D1PO", "UEFA CL", "ITA D1", "ITA D2", "ITA Cup", "SPA D1", "ENG PR", "ENG LCh", "FRA D1", "ENG Cup", "GER D1", "HOL D1", "POR D1", "CON CLA", "CON CSA", "ECU D1", "CHI D1", "CHI Cup", "UEFA EL", "UEFA ECL", "TUR D1", "GRE D1", "IRL D1", "JPN D1", "RUS D1", "SCO PR", "BEL D1", "GER Cup", "SPA Cup", "SPA D2", "HOL Cup", "POR Cup", "URU Cup", "KSA D1", "FIFA IC", "COL Cup", "MAR D1", "ITA SC", "POR LC", "ENG LC", "GER D2", "FIFA CWC"]
+competitions = ["COL D1", "BRA CNF", "COL D1F", "BRA D1", "BRA D2", "BRA Cup", "ARG D1", "ARG Cup", "PER D1", "PAR D1", "URU D1", "BOL D1", "MEX D1PO", "UEFA CL", "ITA D1", "ITA D2", "ITA Cup", "SPA D1", "ENG PR", "ENG LCh", "FRA D1", "ENG Cup", "GER D1", "HOL D1", "POR D1", "CON CLA", "CON CSA", "ECU D1", "CHI D1", "CHI Cup", "UEFA EL", "UEFA ECL", "TUR D1", "GRE D1", "IRL D1", "JPN D1", "RUS D1", "SCO PR", "BEL D1", "GER Cup", "SPA Cup", "SPA D2", "HOL Cup", "POR Cup", "URU Cup", "KSA D1", "FIFA IC", "COL Cup", "MAR D1", "ITA SC", "POR LC", "ENG LC", "TUR Cup", "GER D2", "FIFA CWC"]
 
 # Filtrar apenas os dados das competições desejadas
 fdata = [row for row in data if row[2] in competitions]
@@ -302,7 +302,7 @@ df_confrontos['Prob. No BTTS'] = (1 - df_confrontos['BTTS'])
 
 # === XG, OVERALL SCORE, DESEQUILÍBRIO ===
 df_confrontos['Simplified xG Casa'] = (((df_confrontos['6m Média Gols Feitos Casa'] * df_confrontos['6m Média Gols Sofridos Visitante']) + (df_confrontos['5J Média Gols Feitos Casa'] * df_confrontos['5J Média Gols Sofridos Visitante'])) / 2).round(5)
-df_confrontos['Simplified xG Visitante'] = (((df_confrontos['6m Média Gols Feitos Visitante'] * df_confrontos['6m Média Gols Sofridos Casa']) + (df_confrontos['5J Média Gols Feitos Visitante'] * df_confrontos['5J Média Gols Sofridos Casa'])) / 2).round(5)
+df_confrontos['Simplified xG Visitante'] = (((df_confrontos['6m Média Gols Feitos Visitante'] * df_confrontos['6m Média Gols Sofridos Casa']) + (df_confrontos['5J Média Gols Feitos Visitante'] * df_confrontos['5J Média Gols Sofridos Casa'])) / 2 * 0.498).round(5)
 df_confrontos['Overall Score'] = (df_confrontos['Simplified xG Casa'] + df_confrontos['Simplified xG Visitante']).round(5)
 df_confrontos["Desequilíbrio Absoluto xG"] = abs(df_confrontos["Simplified xG Casa"] - df_confrontos["Simplified xG Visitante"])
 df_confrontos["Desequilíbrio % xG"] = (df_confrontos["Desequilíbrio Absoluto xG"] / df_confrontos["Overall Score"]).replace([float('inf'), -float('inf')], 0).fillna(0).round(5)
@@ -603,4 +603,3 @@ with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
     smtp.send_message(msg)
 
 print("✅ E-mail enviado com sucesso!")
-
