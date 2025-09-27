@@ -524,11 +524,16 @@ df_email = df_email.sort_values(by="Hora", ascending=True)
 # === FORMATAR CADA LINHA COMO TEXTO ===
 linhas_email = []
 for _, row in df_email.iterrows():
+    xg_casa_str = f"{row['Simplified xG Casa']:.2f}".replace('.', ',')
+    xg_visit_str = f"{row['Simplified xG Visitante']:.2f}".replace('.', ',')
+    overall_str = f"{row['Overall Score']:.2f}".replace('.', ',')
+    deseq_abs_str = f"{row['Desequilíbrio Absoluto xG']:.2f}".replace('.', ',')
+    deseq_pct_str = f"{row['Desequilíbrio % xG']:.0%}".replace('.', ',')
     linha = (
         f"{row['Hora']} - {row['Casa']} x {row['Visitante']} - {row['Campeonato']} | "
-        f"xG: {row['Simplified xG Casa']:.2f} x {row['Simplified xG Visitante']:.2f} | "
-        f"Total: {row['Overall Score']:.2f} | "
-        f"Dif.: {row['Desequilíbrio Absoluto xG']:.2f} ({row['Desequilíbrio % xG']:.0%})"
+        f"xG: {xg_casa_str} x {xg_visit_str} | "
+        f"Total: {overall_str} | "
+        f"Dif.: {deseq_abs_str} ({deseq_pct_str})"
     )
     linhas_email.append(linha)
 
@@ -544,21 +549,30 @@ msg.set_content("Este e-mail contém uma versão em HTML. Use um cliente que sup
 # === Montar linhas da tabela HTML separadamente ===
 linhas_tabela = ""
 for _, row in df_email.iterrows():
+    prob_05_match_str = f"{row['Prob. +0,5 Match']:.1%}".replace('.', ',')
+    prob_00_str = f"{row['Prob. 0 a 0']:.1%}".replace('.', ',')
+    btts_str = f"{row['BTTS']:.1%}".replace('.', ',')
+    no_btts_str = f"{row['Prob. No BTTS']:.1%}".replace('.', ',')
+    xg_casa_str = f"{row['Simplified xG Casa']:.2f}".replace('.', ',')
+    xg_visit_str = f"{row['Simplified xG Visitante']:.2f}".replace('.', ',')
+    overall_str = f"{row['Overall Score']:.2f}".replace('.', ',')
+    poisson_casa_str = f"{row['Poisson +0.5 Casa']:.0%}".replace('.', ',')
+    poisson_visit_str = f"{row['Poisson +0.5 Visitante']:.0%}".replace('.', ',')
     linhas_tabela += f"""
       <tr>
         <td>{row['Casa']}</td>
         <td>{row['Visitante']}</td>
         <td>{row['Campeonato']}</td>
         <td>{row['Hora']}</td>
-        <td>{row['Prob. +0,5 Match']:.1%}</td>
-        <td>{row['Prob. 0 a 0']:.1%}</td>
-        <td>{row['BTTS']:.1%}</td>
-        <td>{row['Prob. No BTTS']:.1%}</td>
-        <td>{row['Simplified xG Casa']:.2f}</td>
-        <td>{row['Simplified xG Visitante']:.2f}</td>
-        <td>{row['Overall Score']:.2f}</td>
-        <td>{row['Poisson +0.5 Casa']:.0%}</td>
-        <td>{row['Poisson +0.5 Visitante']:.0%}</td>
+        <td>{prob_05_match_str}</td>
+        <td>{prob_00_str}</td>
+        <td>{btts_str}</td>
+        <td>{no_btts_str}</td>
+        <td>{xg_casa_str}</td>
+        <td>{xg_visit_str}</td>
+        <td>{overall_str}</td>
+        <td>{poisson_casa_str}</td>
+        <td>{poisson_visit_str}</td>
       </tr>"""
 
 msg.add_alternative(f"""\
