@@ -5,6 +5,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 import pandas as pd
 import time
 import re
@@ -15,16 +16,17 @@ from email.message import EmailMessage
 import os
 from webdriver_manager.chrome import ChromeDriverManager
 
-
 data_atual = (datetime.now() - timedelta(days=1))
 data_str_formatada = data_atual.strftime("%d-%m-%Y")
 data_url_formatada = data_atual.strftime("%Y%m%d")
 
 # Configurar as opções do Chrome
 chrome_options = Options()
-chrome_options.add_experimental_option("prefs", {"profile.managed_default_content_settings.images": 2})
-chrome_options.add_argument('--ignore-certificate-errors')
-chrome_options.add_argument('--ignore-ssl-errors')
+chrome_options.add_experimental_option(
+    "prefs", {"profile.managed_default_content_settings.images": 2}
+)
+chrome_options.add_argument("--ignore-certificate-errors")
+chrome_options.add_argument("--ignore-ssl-errors")
 
 # ajustes específicos para rodar no GitHub Actions
 chrome_options.add_argument("--headless=new")  # roda sem interface gráfica
@@ -33,43 +35,42 @@ chrome_options.add_argument("--disable-dev-shm-usage")
 chrome_options.add_argument("--disable-gpu")
 chrome_options.add_argument("--disable-software-rasterizer")
 chrome_options.add_argument("--user-data-dir=/tmp/chrome-user-data")  # diretório temporário
+chrome_options.add_argument("--window-size=1920,1080")
 
-# Instanciando o navegador
-driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
-time.sleep(2)
-driver.maximize_window()
+# Instanciando o navegador (usando Service do webdriver-manager)
+service = Service(ChromeDriverManager().install())
+driver = webdriver.Chrome(service=service, options=chrome_options)
 time.sleep(2)
 
 # Acessar o site
-url = f'https://www.futbol24.com/Live/?__igp=1&LiveDate={data_url_formatada}'
+url = f"https://www.futbol24.com/Live/?__igp=1&LiveDate={data_url_formatada}"
 driver.get(url)
-
 time.sleep(3)  # Ajuste conforme necessário para carregar o conteúdo
 
 # Encontrar o elemento <tbody>
-element = driver.find_element(By.CSS_SELECTOR, '#f24com_tableresults > tbody')
+element = driver.find_element(By.CSS_SELECTOR, "#f24com_tableresults > tbody")
 
 # Usar BeautifulSoup para analisar o conteúdo HTML
-soup = BeautifulSoup(element.get_attribute('innerHTML'), 'html.parser')
+soup = BeautifulSoup(element.get_attribute("innerHTML"), "html.parser")
 
 # Encontrar todos os elementos <tr> com "match" na classe
-rows_with_match = soup.find_all('tr', class_=lambda x: x and 'match' in x)
+rows_with_match = soup.find_all("tr", class_=lambda x: x and "match" in x)
 
 # Função para limpar os nomes dos times
 def limpar_nome(nome):
     if nome:
-        nome = re.sub(r'\(\d+\)', '', nome)                      # remove (1), (2), etc.
-        nome = re.sub(r'1st leg: [\d-]+', '', nome)              # remove "1st leg: 0-0"
-        nome = re.sub(r'Agg\.: [\d-]+', '', nome)                # remove "Agg.: 2-3"
+        nome = re.sub(r"\(\d+\)", "", nome)  # remove (1), (2), etc.
+        nome = re.sub(r"1st leg: [\d-]+", "", nome)  # remove "1st leg: 0-0"
+        nome = re.sub(r"Agg\.: [\d-]+", "", nome)  # remove "Agg.: 2-3"
         return nome.strip()
     return None
 
 data = []
 for row in rows_with_match:
     league = row.find(class_="league alt")  # Localiza a classe "league alt"
-    home = row.find(class_="home")         # Localiza a classe "home"
-    guest = row.find(class_="guest")       # Localiza a classe "guest"
-    result1 = row.find(class_="result1")       # Localiza a classe "result"
+    home = row.find(class_="home")  # Localiza a classe "home"
+    guest = row.find(class_="guest")  # Localiza a classe "guest"
+    result1 = row.find(class_="result1")  # Localiza a classe "result"
     # Captura os textos dos elementos encontrados
     league_text = league.get_text(strip=True) if league else None
     home_text = limpar_nome(home.get_text(strip=True)) if home else None
@@ -78,12 +79,65 @@ for row in rows_with_match:
     # Adiciona os dados à lista
     data.append([home_text, result_text, guest_text, league_text])
 
-# Exibir os dados extraídos
+# Exibir os dados extraídos no log
 for row in data:
     print(row)
 
-competitions = ["COL D1", "BRA CNF", "COL D1F", "BRA D1", "BRA D2", "BRA Cup", "ARG D1", "ARG Cup", "PER D1", "PAR D1", "URU D1", "BOL D1", "MEX D1PO", "UEFA CL", "ITA D1", "ITA D2", "ITA Cup", "SPA D1", "ENG PR", "ENG LCh", "FRA D1", "ENG Cup", "GER D1", "HOL D1", "POR D1", "CON CLA", "CON CSA", "ECU D1", "CHI D1", "CHI Cup", "UEFA EL", "UEFA ECL", "TUR D1", "GRE D1", "IRL D1", "JPN D1", "RUS D1", "SCO PR", "BEL D1", "GER Cup", "SPA Cup", "SPA D2", "POR Cup", "URU Cup", "KSA D1", "FIFA IC", "COL Cup", "MAR D1", "ITA SC", "POR LC", "ENG LC", "GER D2", "FIFA CWC"]
-
+competitions = [
+    "COL D1",
+    "BRA CNF",
+    "COL D1F",
+    "BRA D1",
+    "BRA D2",
+    "BRA Cup",
+    "ARG D1",
+    "ARG Cup",
+    "PER D1",
+    "PAR D1",
+    "URU D1",
+    "BOL D1",
+    "MEX D1PO",
+    "UEFA CL",
+    "ITA D1",
+    "ITA D2",
+    "ITA Cup",
+    "SPA D1",
+    "ENG PR",
+    "ENG LCh",
+    "FRA D1",
+    "ENG Cup",
+    "GER D1",
+    "HOL D1",
+    "POR D1",
+    "CON CLA",
+    "CON CSA",
+    "ECU D1",
+    "CHI D1",
+    "CHI Cup",
+    "UEFA EL",
+    "UEFA ECL",
+    "TUR D1",
+    "GRE D1",
+    "IRL D1",
+    "JPN D1",
+    "RUS D1",
+    "SCO PR",
+    "BEL D1",
+    "GER Cup",
+    "SPA Cup",
+    "SPA D2",
+    "POR Cup",
+    "URU Cup",
+    "KSA D1",
+    "FIFA IC",
+    "COL Cup",
+    "MAR D1",
+    "ITA SC",
+    "POR LC",
+    "ENG LC",
+    "GER D2",
+    "FIFA CWC",
+]
 
 fdata = [row for row in data if row[3] in competitions]
 
@@ -91,18 +145,18 @@ fdata = [row for row in data if row[3] in competitions]
 df = pd.DataFrame(fdata, columns=["Casa", "Placar", "Visitante", "Campeonato"])
 df["Casa"] = df["Casa"].str.replace("*", "", regex=False)
 df["Visitante"] = df["Visitante"].str.replace("*", "", regex=False)
-df[["Placar Casa", "Placar Visitante"]] = df["Placar"].str.split("-", expand=True) # Dividir a coluna "Placar" em duas colunas: "Placar Casa" e "Placar Visitante"
-df = df.drop(columns=["Placar"]) # Remover a coluna antiga "Placar", se não for mais necessária
-df = df[["Casa", "Placar Casa", "Placar Visitante", "Visitante", "Campeonato"]] #reorganiza as colunas
+df[["Placar Casa", "Placar Visitante"]] = df["Placar"].str.split("-", expand=True)
+df = df.drop(columns=["Placar"])
+df = df[["Casa", "Placar Casa", "Placar Visitante", "Visitante", "Campeonato"]]
 
-df.shape[0]
 # Salvar em um arquivo CSV
 nomedoarquivo = f"RESULTADOS_{data_url_formatada}.csv"
-df.to_csv(nomedoarquivo, sep = ";", encoding='utf-8-sig', index=False, header=True)
+df.to_csv(nomedoarquivo, sep=";", encoding="utf-8-sig", index=False, header=True)
 
+# Credenciais do e-mail vindas das variáveis de ambiente do GitHub
 EMAIL_REMETENTE = os.getenv("EMAIL_REMETENTE")
 EMAIL_DESTINATARIO = os.getenv("EMAIL_DESTINATARIO")
-SENHA_APP = os.getenv("EMAIL_SENHA_APP")
+SENHA_APP = os.getenv("SENHA_APP")  # corrige aqui para usar a secret correta
 
 # === PREPARAR TABELA HTML COM O QUE FOI COLETADO ===
 linhas_tabela = ""
@@ -117,12 +171,15 @@ for _, row in df.iterrows():
       </tr>"""
 
 msg = EmailMessage()
-msg['Subject'] = f'Resultados {data_str_formatada}'
-msg['From'] = EMAIL_REMETENTE
-msg['To'] = EMAIL_DESTINATARIO
-msg.set_content("Este e-mail contém uma versão em HTML. Abra em um cliente que suporte HTML.")
+msg["Subject"] = f"Resultados {data_str_formatada}"
+msg["From"] = EMAIL_REMETENTE
+msg["To"] = EMAIL_DESTINATARIO
+msg.set_content(
+    "Este e-mail contém uma versão em HTML. Abra em um cliente que suporte HTML."
+)
 
-msg.add_alternative(f"""\
+msg.add_alternative(
+    f"""\
 <html>
   <body>
     <p>Olá!</p>
@@ -140,7 +197,9 @@ msg.add_alternative(f"""\
     <p>Abraço,<br>Seu robô de dados 🤖</p>
   </body>
 </html>
-""", subtype='html')
+""",
+    subtype="html",
+)
 
 # === ANEXAR O CSV ===
 with open(nomedoarquivo, "rb") as f:
@@ -148,11 +207,11 @@ with open(nomedoarquivo, "rb") as f:
         f.read(),
         maintype="application",
         subtype="octet-stream",
-        filename=nomedoarquivo
+        filename=nomedoarquivo,
     )
 
 # === ENVIAR O E-MAIL ===
-with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
     smtp.login(EMAIL_REMETENTE, SENHA_APP)
     smtp.send_message(msg)
 
