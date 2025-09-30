@@ -1,0 +1,32 @@
+name: Run Futbol24 Scraper
+
+on:
+  schedule:
+    - cron: '0 9 * * *'   # 10h Brasília = 13h UTC
+  workflow_dispatch:       # também permite rodar manualmente
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install selenium pandas beautifulsoup4
+
+      - name: Run script
+        env:
+          EMAIL_REMETENTE: ${{ secrets.EMAIL_REMETENTE }}
+          EMAIL_DESTINATARIO: ${{ secrets.EMAIL_DESTINATARIO }}
+          SENHA_APP: ${{ secrets.SENHA_APP }}
+        run: |
+          python 04_GITHUB_RESULTADOS_COMPLETO.py
