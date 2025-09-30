@@ -13,6 +13,7 @@ from datetime import datetime, timedelta
 import smtplib
 from email.message import EmailMessage
 import os
+from webdriver_manager.chrome import ChromeDriverManager
 
 
 data_atual = (datetime.now() - timedelta(days=1))
@@ -25,8 +26,16 @@ chrome_options.add_experimental_option("prefs", {"profile.managed_default_conten
 chrome_options.add_argument('--ignore-certificate-errors')
 chrome_options.add_argument('--ignore-ssl-errors')
 
+# ajustes específicos para rodar no GitHub Actions
+chrome_options.add_argument("--headless=new")  # roda sem interface gráfica
+chrome_options.add_argument("--no-sandbox")
+chrome_options.add_argument("--disable-dev-shm-usage")
+chrome_options.add_argument("--disable-gpu")
+chrome_options.add_argument("--disable-software-rasterizer")
+chrome_options.add_argument("--user-data-dir=/tmp/chrome-user-data")  # diretório temporário
+
 # Instanciando o navegador
-driver = webdriver.Chrome(options=chrome_options) # ver em PATH da onde ele está tirando o webdriver. buscar na barra do windows "editar variáveis de ambiente" -> Clicar em "VARIÁVEIS DE AMBIENTE" | se der problema de atualização, entre em https://getwebdriver.com/chromedriver#stable e baixe o novo arquivo chromedriver.exe para a versão correta | copie e cole o arquivo onde mostra o path
+driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
 time.sleep(2)
 driver.maximize_window()
 time.sleep(2)
