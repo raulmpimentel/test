@@ -12,6 +12,7 @@ from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
 import smtplib
 from email.message import EmailMessage
+import os
 
 
 data_atual = (datetime.now() - timedelta(days=1))
@@ -90,10 +91,9 @@ df.shape[0]
 nomedoarquivo = f"RESULTADOS_{data_url_formatada}.csv"
 df.to_csv(nomedoarquivo, sep = ";", encoding='utf-8-sig', index=False, header=True)
 
-# === CONFIGURAÇÕES DE E-MAIL ===
-EMAIL_REMETENTE = 'raulmpimentel@gmail.com'
-EMAIL_DESTINATARIO = 'raulmpimentel@hotmail.com'
-SENHA_APP = 'ousa uhmx vhzd xpoy'  # senha de app do Gmail, não a real da conta
+EMAIL_REMETENTE = os.getenv("EMAIL_REMETENTE")
+EMAIL_DESTINATARIO = os.getenv("EMAIL_DESTINATARIO")
+SENHA_APP = os.getenv("EMAIL_SENHA_APP")
 
 # === PREPARAR TABELA HTML COM O QUE FOI COLETADO ===
 linhas_tabela = ""
