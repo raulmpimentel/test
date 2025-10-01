@@ -14,6 +14,7 @@ from datetime import datetime, timedelta
 import smtplib
 from email.message import EmailMessage
 import os
+from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 
 data_atual = (datetime.now() - timedelta(days=1))
@@ -216,3 +217,4 @@ with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
     smtp.send_message(msg)
 
 print("✅ E-mail enviado com sucesso!")
+
